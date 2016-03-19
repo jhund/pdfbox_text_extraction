@@ -31,14 +31,8 @@ class PdfboxTextExtraction
   # @param option [Float] crop_width crop area width
   # @param option [Float] crop_height crop area height
   # @return [String] the extracted text
-  def self.run(path_to_pdf, options)
-    extract_text(path_to_pdf, options)
-  end
-
-  # Extracts text
-  # @see #run
-  def self.extract_text(pdf_filepath, options)
-    file = File.new(pdf_filepath)
+  def self.run(path_to_pdf, options={})
+    file = File.new(path_to_pdf)
     pd_doc = PDDocument.load(file)
     text_stripper = nil
     all_text = ''
@@ -74,7 +68,7 @@ class PdfboxTextExtraction
 
   # Sets params on text_stripper.
   # @param text_stripper [PDFTextStripper]
-  def configure_text_extraction_params(text_stripper)
+  def self.configure_text_extraction_params(text_stripper)
 
     # *****************************************************
     # Extraction thresholds and tolerances
