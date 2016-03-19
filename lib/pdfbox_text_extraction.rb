@@ -42,7 +42,7 @@ class PdfboxTextExtraction
     pd_doc = PDDocument.load(file)
     text_stripper = nil
     all_text = ''
-    if %i[crop_x crop_y crop_width crop_height].any? { |e| options[e] }
+    if [:crop_x, :crop_y, :crop_width, :crop_height].any? { |e| options[e] }
       # crop options given, extract from crop area only
       res = 72
       body_text_rect = Rectangle2D::Float.new(
