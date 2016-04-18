@@ -26,10 +26,20 @@ class PdfboxTextExtraction
   #
   # @param path_to_pdf [String]
   # @param options [Hash, optional]
-  # @param option [Float] crop_x crop area top left corner x-coordinate
-  # @param option [Float] crop_y crop area top left corner y-coordinate
-  # @param option [Float] crop_width crop area width
-  # @param option [Float] crop_height crop area height
+  # @option options [Float] crop_x crop area top left corner x-coordinate
+  # @option options [Float] crop_y crop area top left corner y-coordinate
+  # @option options [Float] crop_width crop area width
+  # @option options [Float] crop_height crop area height
+  # @option options [Float] average_char_tolerance
+  # @option options [Float] drop_threshold
+  # @option options [Float] indent_threshold
+  # @option options [Float] spacing_tolerance
+  # @option options [Boolean] sort_by_position
+  # @option options [String] line_separator
+  # @option options [String] page_end
+  # @option options [String] page_start
+  # @option options [String] paragraph_end
+  # @option options [String] paragraph_start
   # @return [String] the extracted text
   def self.run(path_to_pdf, options={})
     file = File.new(path_to_pdf)
@@ -47,7 +57,7 @@ class PdfboxTextExtraction
       )
       text_stripper = PDFTextStripperByArea.new
       text_stripper.addRegion("bodyText", body_text_rect)
-      configure_text_extraction_params(text_stripper)
+      configure_text_extraction_params(text_stripper, options)
 
       pd_doc.getPages.each do |page|
         text_stripper.extractRegions(page)
@@ -57,7 +67,7 @@ class PdfboxTextExtraction
     else
       # No crop options given, extract all text
       text_stripper = PDFTextStripper.new
-      configure_text_extraction_params(text_stripper)
+      configure_text_extraction_params(text_stripper, options)
       all_text << text_stripper.getText(pd_doc)
     end
 
@@ -68,7 +78,7 @@ class PdfboxTextExtraction
 
   # Sets params on text_stripper.
   # @param text_stripper [PDFTextStripper]
-  def self.configure_text_extraction_params(text_stripper)
+  def self.configure_text_extraction_params(text_stripper, options)
 
     # *****************************************************
     # Extraction thresholds and tolerances
@@ -76,25 +86,33 @@ class PdfboxTextExtraction
     # Set the character width-based tolerance value that is used to estimate
     # where spaces in text should be added.
     # Default: 0.30000001192092896
-    # text_stripper.setAverageCharTolerance(0.30000001192092896)
+    if(o = options[:average_char_tolerance])
+      text_stripper.setAverageCharTolerance(o)
+    end
 
     # Set the minimum whitespace, as a multiple of the max height of the current
     # characters beyond which the current line start is considered to be a
     # paragraph start.
     # Default: 2.5
-    # text_stripper.setDropThreshold(2.5)
+    if(o = options[:drop_threshold])
+      text_stripper.setDropThreshold(o)
+    end
 
     # Set the multiple of whitespace character widths for the current text
     # which the current line start can be indented from the previous line
     # start beyond which the current line start is considered to be a
     # paragraph start.
     # Default: 2.0
-    # text_stripper.setIndentThreshold(2.0)
+    if(o = options[:indent_threshold])
+      text_stripper.setIndentThreshold(o)
+    end
 
     # Set the space width-based tolerance value that is used to estimate where
     # spaces in text should be added.
     # Default: 0.5
-    text_stripper.setSpacingTolerance(0.3)
+    if(o = options[:spacing_tolerance])
+      text_stripper.setSpacingTolerance(o)
+    end
 
     # *****************************************************
     # Sort order
@@ -102,30 +120,42 @@ class PdfboxTextExtraction
     # The order of the text tokens in a PDF file may not be in the same as
     # they appear visually on the screen.
     # Default: false
-    text_stripper.setSortByPosition(false)
+    if !(o = options[:sort_by_position]).nil? # Allow override of false
+      text_stripper.setSortByPosition(o)
+    end
 
     # *****************************************************
     # Separator tokens
 
     # Set the desired line separator for output text.
     # Default: "\n"
-    # text_stripper.setLineSeparator("\n")
+    if(o = options[:line_separator])
+      text_stripper.setLineSeparator(o)
+    end
 
     # Set the string which will be used at the end of a page.
     # Default: ""
-    # text_stripper.setPageEnd("<<page-end>>")
+    if(o = options[:page_end])
+      text_stripper.setPageEnd(o)
+    end
 
     # Set the string which will be used at the end of a page.
     # Default: ""
-    # text_stripper.setPageStart("<<page-start>>")
+    if(o = options[:page_start])
+      text_stripper.setPageStart(o)
+    end
 
     # Set the string which will be used at the end of a paragraph.
     # Default: ""
-    # text_stripper.setParagraphEnd("<<paragraph-end>>")
+    if(o = options[:paragraph_end])
+      text_stripper.setParagraphEnd(o)
+    end
 
     # Set the string which will be used at the end of a paragraph.
     # Default: ""
-    # text_stripper.setParagraphStart("<<paragraph-start>>")
+    if(o = options[:paragraph_start])
+      text_stripper.setParagraphStart(o)
+    end
 
   end
 
