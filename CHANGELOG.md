@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Allow overriding of extraction params
+
 ### 1.0.2
 
 * Added specs
