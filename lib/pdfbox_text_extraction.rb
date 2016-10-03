@@ -1,8 +1,8 @@
 # Java libraries
 require 'java'
 require_relative "../vendor/pdfbox/commons-logging-1.2/commons-logging-1.2.jar"
-require_relative "../vendor/pdfbox/fontbox-2.0.0.jar"
-require_relative "../vendor/pdfbox/pdfbox-2.0.0.jar"
+require_relative "../vendor/pdfbox/fontbox-2.0.3.jar"
+require_relative "../vendor/pdfbox/pdfbox-2.0.3.jar"
 
 require 'pdfbox_text_extraction/version'
 
